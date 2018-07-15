@@ -11,8 +11,9 @@
 
 use think\Route;
 
-Route::get('banner/:id','api/v1.Banner/getBanner'); //三段式 模块 / 控制器 / 方法名
+Route::get('api/:version/banner/:id','api/:version.Banner/getBanner'); //三段式 模块 / 控制器 / 方法名
 
+Route::get('api/:version/theme','api/:version.Theme/getSimpleList');
 
 
 
