@@ -7,6 +7,5 @@
  */
 
 return [
-    'img_prefix' => 'http://z.cn/public',
-    'token_expire_in' => 7200
+    'token_solt' => 'abcdefghi',
 ];
