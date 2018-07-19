@@ -14,7 +14,7 @@ use think\Validate;
 class IdPositiveInt extends BaseValidate
 {
     protected  $rule = [
-        'id' => 'require|isPositiveIntegar'
+        'id' => 'require|isPositiveInteger'
     ];
 
     protected $message = [

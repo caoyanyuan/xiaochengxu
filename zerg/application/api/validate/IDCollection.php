@@ -12,7 +12,7 @@ namespace app\api\validate;
 class IDCollection extends BaseValidate
 {
     protected $rule = [
-       'ids' => 'require|checkIDs'
+        'ids' => 'require|checkIDs'
     ];
 
     protected $message = [
@@ -26,7 +26,7 @@ class IDCollection extends BaseValidate
             return false;
         }
         foreach ($values as $id) {
-            if (!$this->isPositiveIntegar($id)) {
+            if (!$this->isPositiveInteger($id)) {
                 return false;
             }
         }

@@ -11,6 +11,7 @@ namespace app\api\model;
 
 class Theme extends  BaseModel
 {
+    protected $hidden = ['delete_time'];
     public function topicImg() {
         return $this->belongsTo('Image', 'topic_img_id', 'id');
     }
