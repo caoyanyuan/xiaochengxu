@@ -9,8 +9,8 @@
 namespace app\api\service;
 
 
-use app\api\controller\v1\Token;
 use app\api\model\User as UserModel;
+use app\api\service\Token;
 use app\lib\exception\WeChatException;
 use think\Exception;
 
@@ -30,7 +30,8 @@ class UserToken extends Token
 
     }
 
-    public function get(){
+    public function getKey(){
+
         $result = curl_get($this->wxLoginUrl);
         $wxResult = json_decode($result, true);
         if(empty($wxResult)){
@@ -44,6 +45,8 @@ class UserToken extends Token
             }
         }
     }
+
+
 
     private function grantToken($wxResult){
         //拿到openid
@@ -62,10 +65,9 @@ class UserToken extends Token
     }
 
     private function saveToCache($cacheValue){
-        $key = self::generateToke();
+        $key = self::generateToken();
         $value = json_encode($cacheValue);
         $expire_in = config('setting.token_expire_in');
-
         $result = cache($key,$value,$expire_in);
         if(!$result){
             throw new TokenException([
