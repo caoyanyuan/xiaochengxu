@@ -11,11 +11,11 @@ namespace app\api\service;
 
 class Token
 {
-    public static function generateToke(){
+    public static function generateToken(){
         //随机字符串
         $random = getRandChar(32);
         //时间戳
-        $timestamp = $_SERVER('REQUEST_TIME_FLOAT');
+        $timestamp =  $_SERVER['REQUEST_TIME_FLOAT'];
         //salt 配置的字符串
         $salt = config('secure.token_salt');
 

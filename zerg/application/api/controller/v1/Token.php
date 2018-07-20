@@ -19,7 +19,7 @@ class Token extends BaseModel
     {
         (new TokenGet()) -> goCheck();
         $ut = new UserToken($code);
-        $token = $ut ->get();
+        $token = $ut -> getKey();
         return [
             'token'=>$token
         ];
