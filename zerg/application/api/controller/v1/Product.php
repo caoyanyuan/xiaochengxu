@@ -36,4 +36,9 @@ class Product
         $products = $products->hidden(['summary']);
         return $products;
     }
+
+    public function getOne($id){
+        $product = ProductModel::getDetail($id);
+        return $product;
+    }
 }
