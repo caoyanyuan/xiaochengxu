@@ -11,8 +11,12 @@ namespace app\api\service;
 
 use app\api\model\User as UserModel;
 use app\api\service\Token;
+
+use app\lib\exception\TokenException;
 use app\lib\exception\WeChatException;
 use think\Exception;
+use app\lib\enum\ScopeEnum;
+
 
 class UserToken extends Token
 {
@@ -31,7 +35,6 @@ class UserToken extends Token
     }
 
     public function getKey(){
-
         $result = curl_get($this->wxLoginUrl);
         $wxResult = json_decode($result, true);
         if(empty($wxResult)){
@@ -52,6 +55,8 @@ class UserToken extends Token
         //拿到openid
         //数据库里面查询这个openid是否已经存在,如果已经存在则拿到user的id。如果不存在即新建user也拿id
         //根据拿到的id生成令牌,并记入缓存
+        //将令牌返回客户端
+        //key:令牌 value：wxResult uid scope
         $openid = $wxResult['openid'];
         $user = UserModel::getByOpenid($openid);
         if($user){
@@ -60,7 +65,8 @@ class UserToken extends Token
             $uid = $this->newUser($openid);
         }
         $cacheValue = $this->prepareCacheValue($wxResult,$uid);
-        $cacheKey = $this->saveToCache($uid,$cacheValue);
+        $cacheKey = $this->saveToCache($cacheValue);
+        dump($cacheKey);
         return $cacheKey;
     }
 
@@ -88,7 +94,8 @@ class UserToken extends Token
     private function prepareCacheValue($wxResult,$uid){
         $cacheValue = $wxResult;
         $cacheValue['uid'] = $uid;
-        $cacheValue['scope'] = '16';                //scope代表权限
+        //scope代表权限
+        $cacheValue['scope'] = ScopeEnum::User;
         return $cacheValue;
     }
 
