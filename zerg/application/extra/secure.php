@@ -7,5 +7,5 @@
  */
 
 return [
-    'token_solt' => 'abcdefghi',
+    'token_salt' => 'abcdefghi',
 ];

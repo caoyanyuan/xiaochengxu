@@ -12,9 +12,10 @@ use app\api\validate\Count;
 use app\api\Model\Product as ProductModel;
 use app\api\validate\IdPositiveInt;
 use app\lib\exception\ProductException;
+use think\Controller;
 
 
-class Product
+class Product extends Controller
 {
     public function getRecent($count=15)
     {
@@ -41,4 +42,6 @@ class Product
         $product = ProductModel::getDetail($id);
         return $product;
     }
+
+
 }
