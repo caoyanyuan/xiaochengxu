@@ -9,10 +9,14 @@
 namespace app\api\service;
 
 
+use app\api\model\OrderProduct;
 use app\api\model\Product;
 use app\api\model\UserAddress;
 use app\lib\exception\OrderException;
 use app\lib\exception\UserException;
+use app\api\model\Order as OrderModel;
+use think\Db;
+use think\Exception;
 
 class Order
 {
@@ -29,27 +33,50 @@ class Order
         $this->oProducts = $oProducts;
         $this->products = $this->getProductByOrder($oProducts);
         $this->uid = $uid;
-        $status = $this->getProductStatus();
+        $status = $this->getOrderStatus();
         if(!$this->status['pass']){
             $status['order_id'] = '-1';
         }
         //开始创建订单
         $orderSnap  = $this->snapOrder($status);
-
+        $result = $this->createOrder($orderSnap);
+        $result['pass'] = true;
+        return $result;
     }
 
-    private function createOrder()
+    private function createOrder($snap)
     {
+        Db::startTrans();
+        try{
+            $orderNO = $this->makeOrderNo();
+            $order = new OrderModel();
+            $order->order_no = $orderNO;
+            $order->user_id = $this->uid;
+            $order->total_price = $snap['orderPrice'];
+            $order->snap_address = $snap['snapAddress'];
+            $order->snap_name = $snap['snapName'];
+            $order->snap_img = $snap['snapImg'];
+            $order->snap_items = json_encode($snap['pStatus']);
+            $order->save();
 
-    }
-
-    public function makeOrderNo()
-    {
-        //按时间来生成订单号
-        $yCode = array('A','B','C','D','E','F','G','H','I','J');
-        $orderSn = $yCode[intval(date((Y) - 2017))].strtoupper(dechex(date('m')))
-        .substr(time(),-5).substr(microtime(),2,5).sprintf('%02d',rand(0,99));
-        return $orderSn;
+            //OrderProduct
+            $orderID = $order->id;
+            $createTime = $order->creat_time;
+            $orderProduct = new OrderProduct();
+            foreach($this->oProducts as $p){
+                $p['order_id'] = $orderID;
+            }
+            $orderProduct->saveAll($this->oProducts);
+            return [
+                'order_no'=>$orderNO,
+                'order_id'=>$orderID,
+                'creat_time'=>$createTime
+            ];
+            Db::commit();
+        }catch(Exception $e){
+            Db::rollback();
+            throw $e;
+        }
     }
 
     //生成订单快照
@@ -161,5 +188,14 @@ class Order
             ->visible('id','price','stock','name','main_img_url')
             ->toArray();
         return $products;
+    }
+
+    public function makeOrderNo()
+    {
+        //按时间来生成订单号
+        $yCode = array('A','B','C','D','E','F','G','H','I','J');
+        $orderSn = $yCode[intval(date((Y) - 2017))].strtoupper(dechex(date('m')))
+            .substr(time(),-5).substr(microtime(),2,5).sprintf('%02d',rand(0,99));
+        return $orderSn;
     }
 }
