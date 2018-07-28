@@ -44,7 +44,7 @@ class UserToken extends Token
             if($loginFail){
                 $this -> processLoginError($wxResult);
             }else{
-                $this -> grantToken($wxResult);
+                return $this -> grantToken($wxResult);
             }
         }
     }
@@ -66,7 +66,6 @@ class UserToken extends Token
         }
         $cacheValue = $this->prepareCacheValue($wxResult,$uid);
         $cacheKey = $this->saveToCache($cacheValue);
-        dump($cacheKey);
         return $cacheKey;
     }
 
