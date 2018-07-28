@@ -29,7 +29,8 @@ class OrderPlace extends BaseValidate
         'products' => 'checkProducts'
     ];
     protected $singRule = [
-        'product_id' => 'isPositiveInt'
+        'product_id' => 'isPositiveInteger',
+        'count'=>'isPositiveInteger'
     ];
 
     //对数组类型进行校验，
