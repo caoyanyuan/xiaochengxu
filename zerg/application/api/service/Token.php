@@ -33,7 +33,6 @@ class Token
         //约定：所有的用户令牌都要放在http的header的信息里面
         $token = Request::instance()->header('token');
         $values = Cache::get($token);
-        dump($values);
         if(!$values){
             throw new TokenException();
         }else{

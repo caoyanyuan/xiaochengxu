@@ -9,7 +9,9 @@
 namespace app\api\model;
 
 
-class OrderProduct
+use think\Model;
+
+class OrderProduct extends Model
 {
 
 }

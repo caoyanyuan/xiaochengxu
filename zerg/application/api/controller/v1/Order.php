@@ -12,7 +12,7 @@ namespace app\api\controller\v1;
 use app\api\validate\OrderPlace;
 use app\lib\enum\ScopeEnum;
 use think\Controller;
-use app\api\service\token as TokenService;
+use app\api\service\Token as TokenService;
 use app\api\service\Order as OrderService;
 
 class Order extends BaseController

@@ -9,7 +9,9 @@
 namespace app\api\model;
 
 
-class Order
+use think\Model;
+
+class Order extends Model
 {
 
 }
