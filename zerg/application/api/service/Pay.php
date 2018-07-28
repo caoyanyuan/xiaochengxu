@@ -7,35 +7,38 @@
  */
 
 namespace app\api\service;
-use app\lib\enum\OrderStatusEnum;
+use app\lib\enum\orderStatusEnum;
 use app\lib\exception\OrderException;
 use app\lib\exception\TokenException;
 use think\Exception;
 use app\api\service\Order;
 use app\api\model\Order as OrderModel;
 use think\Loader;
+use think\Log;
 
-Loader::import('WxPay.Api',EXTEND_PATH,'.api.php');
+Loader::import('WxPay.WxPay',EXTEND_PATH,'.Api.php');
 
 class Pay
 {
-    public $orderID;
+    private $orderID;
 
     function __construct($orderID)
     {
-        if(!$orderID){
-          throw new Exception('订单号不能为空');
+        if (!$orderID)
+        {
+            throw new Exception('订单号不允许为NULL');
         }
         $this->orderID = $orderID;
     }
 
-    public function pay()
+   public function pay()
     {
         //对订单号进行检测
         $this->checkOrderIdValid();
         //再次检测库存量
         $order = new Order();
         $status = $order->checkOrderStock($this->orderID);
+        return $this->makeWxPreOrder($status['orderPrice']);
     }
 
     private function makeWxPreOrder($totalPrice)
@@ -51,7 +54,7 @@ class Pay
         $wxOrderData->SetBody('零食商城');
         $wxOrderData->SetOpenid($openid);
         $wxOrderData->SetNotify_url('');
-        $this->getPaySignature($wxOrderData);
+        return $this->getPaySignature($wxOrderData);
     }
 
     private function getPaySignature($wxOrderData)
@@ -61,22 +64,45 @@ class Pay
             Log::record($wxOrder,'error');
             Log::record('获取预支付订单失败','error');
         }
-        return $wxOrder;
+        $this->recordOrder($wxOrder);
+        $signature = $this->sign($wxOrder);
+        return $signature;
     }
 
+    private function sign($wxOrder)
+    {
+        $jsApiPayData = new \WxPayJsApiPay();
+        $jsApiPayData->SetAppid(config('wx.app_id'));
+        $jsApiPayData->SetTimeStamp((string)time());
+        $rand = md5(time() . mt_rand(0,1000));
+        $jsApiPayData->SetNonceStr($rand);
+        $jsApiPayData->SetPackage('prepay_id=' . $wxOrder['prepay_id']);
+        $jsApiPayData->SetSignType('md5');
+        $sign = $jsApiPayData->MakeSign();
+        $rawValues = $jsApiPayData->GetValues();
+        $rawValues['paySign'] = $sign;
+        unset($rawValues['appId']);
+        return $rawValues;
+    }
+
+    private function recordOrder($wxOrder)
+    {
+        OrderModel::where('id','=',$this->orderID)
+            ->update(['prepay'=>$wxOrder['prepay_id']]);
+    }
 
     private function checkOrderIdValid()
     {
-        $order = OrderModel::where('id','=',$this->orderID);
+        $order = OrderModel::where('id','=',$this->orderID)->find();
         if(!$order){
             throw new OrderException([
                 'msg'=>'订单找不到,请检查订单id',
                 'errorCode'=>50002
             ]);
         }
-        if(!Token::isValidOperator($this->orderID)){
+        if(!Token::isValidOperator($order->user_id)){
             throw new TokenException([
-                'msg'=>'订单用户与当前token用户不匹配',
+                'msg'=>'订单所属用户与当前token用户不匹配',
                 'errorCode'=>50003
             ]);
         }

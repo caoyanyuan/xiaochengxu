@@ -40,4 +40,5 @@ Route::post('api/:verison/address','api/:verison.Address/createOrUpdate');
 
 
 //Order
-Route::post('api/:version/order','api/:verison.Order/placeOrder');
+Route::post('api/:verison/order','api/:verison.Order/placeOrder');
+Route::post('api/:verison/pay/pre_order','api/:verison.Pay/getPreOrder');

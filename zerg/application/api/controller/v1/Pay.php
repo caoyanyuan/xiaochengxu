@@ -10,6 +10,7 @@ namespace app\api\controller\v1;
 
 
 use app\api\validate\IdPositiveInt;
+use app\api\service\Pay as PayModel;
 
 
 class Pay
@@ -17,7 +18,7 @@ class Pay
     public function getPreOrder($id='')
     {
         (new IdPositiveInt())->goCheck();
-
-
+        $result = (new PayModel($id))->pay();
+        return $result;
     }
 }
