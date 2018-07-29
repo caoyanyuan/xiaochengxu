@@ -111,7 +111,7 @@ class Order
         $snap['snapName'] = $this->products[0]['name'];
         $snap['snapImg'] = $this->products[0]['main_img_url'];
         if(count($this->products) > 1){
-            $snap['snapName'] += $snap['snapName'].'等';
+            $snap['snapName'] = $snap['snapName'].'等';
         }
         return $snap;
     }
@@ -166,7 +166,8 @@ class Order
             'hasStock' => 'false',
             'count' => 0,
             'name' =>'',
-            'totalPrice' => 0
+            'totalPrice' => 0,
+            'img'=>''
         ];
 
         for($i=0; $i<count($products);$i++){
@@ -182,6 +183,8 @@ class Order
         }else{
            $product = $products[$pIndex];
            $pStatus['id'] = $product['id'];
+           $pStatus['name'] = $product['name'];
+           $pStatus['img'] = $product['main_img_url'];
            $pStatus['count'] = $oCount;
            $pStatus['totalPrice'] = $product['price']*$oCount;
            if($product['stock'] - $oCount >=0){
