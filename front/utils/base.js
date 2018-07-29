@@ -1,0 +1,28 @@
+import {Config} from 'config.js'
+class Base{
+    constructor(){
+        this.baseRequestUrl = Config.baseUrl;
+    }
+
+    request(params){
+        var url = this.baseRequestUrl + params.url;
+        var method = params.type ? params.type : 'GET';
+        wx.request({
+            url:url,
+            type:method,
+            data:params.data,
+            header: {
+                'content-type':'application/json',
+                'token':wx.getStorageSync('token')
+            },
+            success:function (res) {
+                params.sCallBack && params.sCallBack(res.data);
+            },
+            error:function (err) {
+
+            }
+        })
+    }
+}
+
+export {Base}
