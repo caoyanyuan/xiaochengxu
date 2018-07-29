@@ -1,0 +1,22 @@
+
+<view>
+  <swiper indicator-dots = 'true' autopaly="true" class="'swiper">
+    <block wx:for="{{bannerArr}}">
+      <swiper-item class="banner-item">
+        <image mode="aspectFill" class="item-image" src="{{item.img.url}}"></image>
+      </swiper-item>
+    </block>
+  </swiper>
+
+  <view class="home-main">
+    <view class="home-main-theme">
+      <view class="home-main-header">精选主题</view>
+      <view class="theme-box">
+        <block wx:for="{{themeArr}}">
+          <image src="{{item.topic_img.url}}"></image>
+        </block>
+      </view>
+    </view>
+    <view class="home-main-products"></view>
+  </view>
+</view>
