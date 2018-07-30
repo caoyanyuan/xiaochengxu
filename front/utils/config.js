@@ -3,5 +3,5 @@ class Config{
 
     }
 }
-Config.baseUrl = 'http://z.cn/api/v1';
+Config.baseUrl = 'http://localhost/zerg/public/index.php/api/v1';
 export {Config}

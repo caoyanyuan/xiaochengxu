@@ -4,7 +4,8 @@ class Index extends Base{
     constructor(){
         super();
     }
-    getBanner(id, callback){
+
+    getBanner(id,callback){
         var params = {
             url:'/banner/'+ id,
             sCallBack: (res)=>{
@@ -13,6 +14,7 @@ class Index extends Base{
         }
         this.request(params);
     }
+
     getTheme(callback){
         var params = {
             url:'/themes/?ids=1,2,3',
@@ -21,6 +23,16 @@ class Index extends Base{
             }
         }
         this.request(params);
+    }
+
+    getProduct(callback) {
+      var params = {
+        url: '/product/recent',
+        sCallBack: (res) => {
+          callback && callback(res);
+        }
+      }
+      this.request(params);
     }
 }
 

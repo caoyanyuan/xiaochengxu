@@ -19,9 +19,13 @@ class Base{
                 params.sCallBack && params.sCallBack(res.data);
             },
             error:function (err) {
-
+              
             }
         })
+    }
+
+    getDataSet(event,key){
+      return event.currentTarget.dataset[key];
     }
 }
 

@@ -11,17 +11,38 @@ Page({
     this._loadData();
   },
   _loadData:function(){
-    var id = 1;
-    var data = index.getBanner(id,(res)=>{
+    index.getBanner(1,(res)=>{
         this.setData({
             'bannerArr':res
         });
     })
+
     index.getTheme((res)=>{
         this.setData({
             'themeArr':res
         });
-
     })
+
+    index.getProduct((res)=>{
+      this.setData({
+        'productsArr':res
+      });
+    })
+
+  
+  },
+  onProductItemTap:function(event){
+    var id = index.getDataSet(event, 'id');
+    wx.navigateTo({
+      url:'../product/product?id='+id
+    });
+  },
+  onThemeItemTap:function(event){
+    var id = index.getDataSet(event, 'id');
+    var name = index.getDataSet(event, 'name');
+    wx.navigateTo({
+      url: '../theme/theme?id=' + id + '&name=' + 'name'
+    });
   }
+
 })

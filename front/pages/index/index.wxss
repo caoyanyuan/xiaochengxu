@@ -1,3 +1,5 @@
+@import '../tpls/products/products-tpl.wxss';
+
 .swiper{
   height: 400rpx;
   width: 100%;
@@ -69,4 +71,5 @@
   height: 48rpx;
   width: 48rpx;
 }
+
 
