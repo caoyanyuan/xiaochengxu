@@ -9,6 +9,9 @@ Page({
   },
   onLoad: function () {
     this._loadData();
+    wx.setNavigationBarTitle({
+      title: '零食商贩',
+    })
   },
   _loadData:function(){
     index.getBanner(1,(res)=>{
@@ -41,7 +44,7 @@ Page({
     var id = index.getDataSet(event, 'id');
     var name = index.getDataSet(event, 'name');
     wx.navigateTo({
-      url: '../theme/theme?id=' + id + '&name=' + 'name'
+      url: '../theme/theme?id=' + id + '&name=' + name
     });
   }
 
