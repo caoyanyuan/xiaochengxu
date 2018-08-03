@@ -6,8 +6,7 @@ Page({
   data:{
     cartData:[],
     selectedTypeCounts:0,        //选中类目
-    selectedCounts:0,            //选中产品总个数
-    totalPrice:0                 //总价格
+    selectedCounts:0            //选中产品总个数
   },
   onLoad: function() {
   
@@ -85,11 +84,30 @@ Page({
   },
 
   //加减商品
-  changeCounts: function(){
+  changeCounts: function(event){
+    var id = cart.getDataSet(event, 'id'),
+        type = cart.getDataSet(event, 'type'),
+        index = this._getIndexById(id),
+        count = 1;
+    if(type == 'cut'){
+      count = -1;
+    }
+    this.data.cartData[index].counts+=count;
+    this._resertCartData(this.data.cartData);
+  },
+
+  //删除商品
+  delete: function(event){
     var id = cart.getDataSet(event, 'id'),
         type = cart.getDataSet(event, 'type'),
         index = this._getIndexById(id);
+    this.data.cartData.splice(index,1);
+    this._resertCartData();
+  },
 
+  //离开页面时候更新缓存，切面思想：找一个切入点处理类似的需求
+  onHide: function(){
+    cart.execSetStorageSync(this.data.cartData);
   }
 
 })

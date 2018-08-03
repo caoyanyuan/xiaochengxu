@@ -59,6 +59,7 @@ export class Cart extends Base{
     wx.setStorageSync(this._storageKey, cartArr);
   }
 
+  //查询购物车中是否有这个产品
   _isHasThat(id, arr){
     var result = {
       index: -1
@@ -73,4 +74,9 @@ export class Cart extends Base{
     }
     return result;
   }
+
+  execSetStorageSync(cartArr){
+    wx.setStorageSync(this._storageKey, cartArr);
+  }
+
 }
