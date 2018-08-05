@@ -6,13 +6,14 @@ Page({
   data:{
     cartData:[],
     selectedTypeCounts:0,        //选中类目
-    selectedCounts:0            //选中产品总个数
+    selectedCounts:0,           //选中产品总个数
+    totalPrice:0                //总价格
   },
   onLoad: function() {
   
   },
   onShow: function(){
-    var tempObj = cart.getCartTotalCounts();
+    var tempObj = cart.getCartTotalCounts(true);
     this.setData({
       cartData: cart.getCartDataFromLocal(),
       selectedCounts: tempObj.counts1,
@@ -108,6 +109,21 @@ Page({
   //离开页面时候更新缓存，切面思想：找一个切入点处理类似的需求
   onHide: function(){
     cart.execSetStorageSync(this.data.cartData);
+  },
+
+  //跳转到商品详情页
+  onProductsItemTap: function(event){
+    var id = cart.getDataSet(event, 'id');
+    wx.navigateTo({
+      url:'/pages/product/product?id='+id
+    })
+  },
+
+  //提交订单 带入总金额和from
+  submitOrder: function(){
+    wx.navigateTo({
+      url: '/pages/order/order?totalPrice=' + this.data.totalPrice + "from=cart"
+    })
   }
 
 })

@@ -1,10 +1,11 @@
 <view class="container cart-container">
     <block wx:if="{{cartData.length>0}}">
         <view class="cart-box">
-            <block wx:for="{{cartData}}">
+            <block wx:for="{{cartData}}" wx:key="id">
                 <view class="cart-item">
                     <view class="cart-item-main" data-id="{{item.id}}" data-index="{{index}}">
-                        <view class="cart-item-checkbox" ontap="toggleSelect" data-id="{{item.id}}" data-status="{{item.selectStatus}}">
+                        <view class="cart-item-checkbox" ontap="toggleSelect" data-id="{{item.id}}" 
+                          data-status="{{item.selectStatus}}">
                             <image wx:if="{{item.selectStatus}}" src="../../imgs/icon/circle@selected.png"></image>
                             <image wx:else src="../../imgs/icon/circle@noselected.png"></image>
                         </view>

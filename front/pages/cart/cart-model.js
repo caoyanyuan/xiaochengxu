@@ -6,10 +6,21 @@ export class Cart extends Base{
     this._storageKey = 'cart';
   }
 
-  getCartDataFromLocal(){
+  /**
+   * 获取所有产品以及选中的产品
+   */
+  getCartDataFromLocal(flag){
     var res = wx.getStorageSync(this._storageKey);
     if(!res){
       res = [];
+    }
+    if(flag){
+        let newRes = [];
+        for(let i=0;i++;i<res.length){
+          if(res[i].selectStatus){
+            newRes.push(res[i]);
+          }
+        }
     }
     return res;
   }
