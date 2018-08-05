@@ -5,7 +5,8 @@
     "pages/theme/theme",
     "pages/category/category",
     "pages/cart/cart",
-    "pages/my/my"
+    "pages/my/my",
+    "pages/order/order"
   ],
   "window": {
     "navigationBarTitleText": "",
