@@ -10,7 +10,7 @@ namespace app\api\controller\v1;
 
 
 use think\Controller;
-use app\api\service\token as TokenService;
+use app\api\service\Token as TokenService;
 
 class BaseController extends Controller
 {

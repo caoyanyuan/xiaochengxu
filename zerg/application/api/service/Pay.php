@@ -31,7 +31,7 @@ class Pay
         $this->orderID = $orderID;
     }
 
-   public function pay()
+    public function pay()
     {
         //对订单号进行检测
         $this->checkOrderIdValid();

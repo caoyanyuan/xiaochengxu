@@ -36,6 +36,7 @@ class Order
         $status = $this->getOrderStatus();
         if(!$status['pass']){
             $status['order_id'] = '-1';
+            return $status;
         }
         //开始创建订单
         $orderSnap  = $this->snapOrder($status);
@@ -145,10 +146,6 @@ class Order
             );
             if(!$pStatus['hasStock']){
                 $status['pass'] = false;
-                throw new OrderException([
-                    'code'=>'403',
-                    'msg'=>'产品为'.$oProduct['product_id'].'的商品库存不足'
-                ]);
             }
             $status['orderPrice'] += $pStatus['totalPrice'];
             $status['totalCount'] += $pStatus['count'];
