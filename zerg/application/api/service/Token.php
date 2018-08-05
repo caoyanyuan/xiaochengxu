@@ -96,4 +96,14 @@ class Token
         return false;
     }
 
+    //检测token是否合法
+    public static function verifyToken($token)
+    {
+        $exist = Cache::get($token);
+        if($exist){
+            return true;
+        }
+        return false;
+    }
+
 }
