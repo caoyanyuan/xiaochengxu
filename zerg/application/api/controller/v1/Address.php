@@ -9,8 +9,10 @@
 namespace app\api\controller\v1;
 
 use app\api\model\User as UserModel;
+use app\api\model\UserAddress;
 use app\api\validate\AddressNew;
 use app\api\service\Token as TokenService;
+use app\lib\exception\ParameterException;
 use app\lib\exception\SuccessMessage;
 
 use app\lib\exception\UserException;
@@ -18,7 +20,7 @@ use think\Controller;
 use think\Exception;
 
 
-class Address extends Controller
+class Address extends BaseController
 {
     protected $beforeActionList = [
         'checkPrimaryScope' => ['only'=>'createOrUpdate']
@@ -48,5 +50,17 @@ class Address extends Controller
             $user->address->save($dataArrays);
         }
         throw new SuccessMessage();
+    }
+
+    public function getAddress()
+    {
+        $uid = TokenService::getCurrentUID();
+        if(!$uid){
+            throw new ParameterException([
+                'msg' => '用户id不能为空'
+            ]);
+        }
+        $address = UserAddress::where('user_id','=',$uid)->find();
+        return $address;
     }
 }
