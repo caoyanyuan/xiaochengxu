@@ -122,7 +122,7 @@ Page({
   //提交订单 带入总金额和from
   submitOrder: function(){
     wx.navigateTo({
-      url: '/pages/order/order?totalPrice=' + this.data.totalPrice + "from=cart"
+      url: '/pages/order/order?totalPrice=' + this.data.totalPrice + "&from=cart"
     })
   }
 

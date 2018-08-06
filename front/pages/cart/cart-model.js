@@ -30,19 +30,19 @@ export class Cart extends Base{
    * flag: 是否是拿选中时候的
    */
   getCartTotalCounts(flag){
-    var cartArr = this.getCartDataFromLocal();
+    var cartData = this.getCartDataFromLocal();
     var counts1 = 0,
         counts2 = 0;
     if(flag){
-      for(var i=0; i<cartArr.length; i++){
-        if(cartArr[i].selectStatus){
-          counts1 += cartArr[i].counts;
+      for(var i=0; i<cartData.length; i++){
+        if(cartData[i].selectStatus){
+          counts1 += cartData[i].counts;
           counts2 ++;
         }
       }
     }else{
-      for(var i=0; i<cartArr.length; i++){
-          counts1 += cartArr[i].counts;
+      for(var i=0; i<cartData.length; i++){
+          counts1 += cartData[i].counts;
           counts2 ++;
       }
     }
@@ -55,19 +55,19 @@ export class Cart extends Base{
 
   //加入购物车，
   add(item, counts){
-    var cartArr = this.getCartDataFromLocal();
-    var isHadInfo = this._isHasThat(item.id, cartArr);
+    var cartData = this.getCartDataFromLocal();
+    var isHadInfo = this._isHasThat(item.id, cartData);
    
     //已有商品
     if(isHadInfo.index == -1){
       item.counts = counts;
       item.selectStatus = true;
-      cartArr.push(item);
+      cartData.push(item);
     }else{
-      cartArr[isHadInfo['index']].counts += counts;
+      cartData[isHadInfo['index']].counts += counts;
     }
 
-    wx.setStorageSync(this._storageKey, cartArr);
+    wx.setStorageSync(this._storageKey, cartData);
   }
 
   //查询购物车中是否有这个产品
@@ -86,8 +86,21 @@ export class Cart extends Base{
     return result;
   }
 
-  execSetStorageSync(cartArr){
-    wx.setStorageSync(this._storageKey, cartArr);
+  //删除某个或某些商品
+  delete(ids){
+    if(!(ids instanceof Array)){
+      ids = [ids];
+    }
+    var cartData = this.getCartDataFromLocal();
+    for(var id in ids){
+      let index = this._isHasThat(id, cartData);
+      cartData.splice(index, 1);
+    }
+    this.execSetStorageSync(cartData);
+  }
+
+  execSetStorageSync(cartData){
+    wx.setStorageSync(this._storageKey, cartData);
   }
 
 }
