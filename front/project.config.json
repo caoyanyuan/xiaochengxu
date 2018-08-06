@@ -33,7 +33,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 2,
+			"current": 3,
 			"list": [
 				{
 					"id": 0,
@@ -52,6 +52,12 @@
 					"name": "order",
 					"pathName": "pages/order/order",
 					"query": "totalPrice=0.2&from=cart"
+				},
+				{
+					"id": -1,
+					"name": "order",
+					"pathName": "pages/order/order",
+					"query": "totalPrice=0.07&from=cart"
 				}
 			]
 		}

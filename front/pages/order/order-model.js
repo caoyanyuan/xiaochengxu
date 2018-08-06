@@ -25,14 +25,14 @@ export class Order extends Base{
 
   /*
   * 生成预订单拿到签名并拉起微信支付
-    callback中 0：库存等原因导致订单不能支付（第三个库存量检测）
+    callback中 0：库存等原因导致订单不能支付（第三次库存量检测）
     1：支付失败获取取消  2：支付成功
    */
-  execPay(orderNO, callback){
+  execPay(orderID, callback){
     var params = {
-      url: '/order/pre_order',
-      method: 'POST',
-      data: {id: orderNO},
+      url: '/pay/pre_order',
+      type: 'POST',
+      data: {id: orderID},
       sCallback: function(data){
         var timestamp = data.timestamp;
         if(timestamp){
@@ -53,7 +53,18 @@ export class Order extends Base{
         }
       }
     }
+    this.request(params);
+  }
 
+  /*获取订单快照*/
+  getOrderInfoById(orderID, callback){
+    var params = {
+      url:'/order/'+orderID,
+      sCallback: function(res){
+        callback && callback(res);
+      }
+    }; 
+    this.request(params);   
   }
 }
 

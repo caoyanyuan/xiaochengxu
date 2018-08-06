@@ -10,7 +10,7 @@ Page({
   
   data: {
     totalPrice:0,             //下单的总价格
-    id: -1,                  //订单id
+    id: null,                  //订单id
     orderStatus: 0           //订单来源，也对应订单状态 0：来自购物车（购物车未支付）， 1：来自订单（已生成订单未支付）
   },
 
@@ -25,7 +25,28 @@ Page({
 
     }
     this.getAddress();
-    
+  },
+
+  onShow: function(){
+    if (this.data.id) {
+      var that = this;
+      //下单后，支付成功或者失败后，点左上角返回时能够更新订单状态 所以放在onshow中
+      var id = this.data.id;
+      order.getOrderInfoById(id, (data) => {
+        var addressInfo = data.snap_address;
+        addressInfo.totalDetail = address.setAddressInfo(addressInfo);
+        that.setData({
+          orderStatus: data.status,
+          productsArr: data.snap_items,
+          account: data.total_price,
+          addressInfo: addressInfo,
+          basicInfo: {
+            orderTime: data.create_time,
+            orderNo: data.order_no
+          },
+        });
+      });
+    }
   },
 
   //获取地址
@@ -58,8 +79,9 @@ Page({
     let products = this.formatOrderData();
     //支付第一步：下单
     order.placeOrder(products, (res) => {
+      
         if(res.pass){
-          this.data.id = res.id;
+          this.data.id = res.order_id;
           this._execPay();
         }else{
           this._orderFail(res);
@@ -69,14 +91,32 @@ Page({
 
   //支付第二步：拉起微信支付
   _execPay: function(){
-    order._execPay((payStatus)=>{
+    var id = this.data.id; 
+    /*真实支付*/
+    order.execPay(id, (payStatus)=>{
       if (payStatus > 0){
-        //进行库存量减少
-      }
-      if(payStatus == 0){
-        
+          this.deleteFromCart();
+          var flag = payStatus == 2;
+          wx.navigateTo({
+            url: '/pay-result/pay-result?id'+id+'&flag='+flag
+          })
       }
     })
+    // var payStatus = 1;
+    // this.deleteFromCart();
+    // var flag = payStatus == 2;
+    // wx.navigateTo({
+    //   url: '../pay-result/pay-result?id='+id+'&flag='+flag
+    // })
+  },
+
+  //从购物车中删除已下单的产品
+  deleteFromCart: function(){
+    var idx = [] ,arr = this.data.productsArr;
+    for(var id in arr){
+      idx.push(id);
+    }    
+    cart.delete(idx);
   },
 
   //生成订单失败：返回客户错误信息
@@ -100,7 +140,7 @@ Page({
     this.showTips('下单失败', str + '缺货');
   },
 
-  //整理出下单参数 
+  //整理出下单参数
   formatOrderData: function(){
     let tempArr = [],
         proArr = this.data.productsArr;
