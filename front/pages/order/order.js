@@ -16,36 +16,46 @@ Page({
 
   onLoad: function (options) {
     if(options.from == 'cart'){
-      this.setData({
-        totalPrice: options.totalPrice,
-        productsArr: cart.getCartDataFromLocal(),
-        orderStatus: 0
-      })
+      this.fromCart(options);
     }else{
-
+      this.data.id = options.id;
+      this.fromOrder();
     }
     this.getAddress();
   },
 
+  fromCart: function(options){
+    this.setData({
+      totalPrice: options.totalPrice,
+      productsArr: cart.getCartDataFromLocal(),
+      orderStatus: 0
+    })
+  },
+
+  fromOrder: function(){
+    var that = this;
+    //下单后，支付成功或者失败后，点左上角返回时能够更新订单状态 所以放在onshow中
+    var id = this.data.id;
+    order.getOrderInfoById(id, (data) => {
+      var addressInfo = data.snap_address;
+      addressInfo.totalDetail = address.setAddressInfo(addressInfo);
+
+      that.setData({
+        orderStatus: data.status,
+        productsArr: data.snap_items,
+        account: data.total_price,
+        addressInfo: addressInfo,
+        basicInfo: {
+          orderTime: data.create_time,
+          orderNo: data.order_no
+        },
+      });
+    });
+  },
+
   onShow: function(){
     if (this.data.id) {
-      var that = this;
-      //下单后，支付成功或者失败后，点左上角返回时能够更新订单状态 所以放在onshow中
-      var id = this.data.id;
-      order.getOrderInfoById(id, (data) => {
-        var addressInfo = data.snap_address;
-        addressInfo.totalDetail = address.setAddressInfo(addressInfo);
-        that.setData({
-          orderStatus: data.status,
-          productsArr: data.snap_items,
-          account: data.total_price,
-          addressInfo: addressInfo,
-          basicInfo: {
-            orderTime: data.create_time,
-            orderNo: data.order_no
-          },
-        });
-      });
+      this.fromOrder();
     }
   },
 
@@ -79,7 +89,6 @@ Page({
     let products = this.formatOrderData();
     //支付第一步：下单
     order.placeOrder(products, (res) => {
-      
         if(res.pass){
           this.data.id = res.order_id;
           this._execPay();
@@ -89,25 +98,30 @@ Page({
     })
   },
 
+  //第二次支付
+  oneMoresPay: function(){
+    this._execPay();
+  },
+
   //支付第二步：拉起微信支付
   _execPay: function(){
     var id = this.data.id; 
     /*真实支付*/
-    order.execPay(id, (payStatus)=>{
-      if (payStatus > 0){
-          this.deleteFromCart();
-          var flag = payStatus == 2;
-          wx.navigateTo({
-            url: '/pay-result/pay-result?id'+id+'&flag='+flag
-          })
-      }
-    })
-    // var payStatus = 1;
-    // this.deleteFromCart();
-    // var flag = payStatus == 2;
-    // wx.navigateTo({
-    //   url: '../pay-result/pay-result?id='+id+'&flag='+flag
+    // order.execPay(id, (payStatus)=>{
+    //   if (payStatus > 0){
+    //       this.deleteFromCart();
+    //       var flag = payStatus == 2;
+    //       wx.navigateTo({
+    //         url: '/pay-result/pay-result?id'+id+'&flag='+flag
+    //       })
+    //   }
     // })
+    var payStatus = 1;
+    this.deleteFromCart();
+    var flag = payStatus == 2;
+    wx.navigateTo({
+      url: '../pay-result/pay-result?id='+id+'&flag='+flag
+    })
   },
 
   //从购物车中删除已下单的产品
