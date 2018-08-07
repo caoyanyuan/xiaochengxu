@@ -13,7 +13,7 @@ use think\Model;
 
 class Order extends BaseModel
 {
-    protected $hidden = ['user_id', 'delete_time', 'create_time'];
+    protected $hidden = ['user_id', 'delete_time'];
     protected $autoWriteTimestamp = true;
 
     public function getSnapItemsAttr($value)

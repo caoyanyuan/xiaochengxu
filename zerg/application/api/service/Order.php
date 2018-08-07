@@ -65,13 +65,13 @@ class Order
             $order->order_no = $orderNO;
             $order->user_id = $this->uid;
             $order->total_price = $snap['orderPrice'];
+            $order->total_count = $snap['totalCount'];
             $order->snap_address = $snap['snapAddress'];
             $order->snap_name = $snap['snapName'];
             $order->snap_img = $snap['snapImg'];
             $order->snap_items = json_encode($snap['pStatus']);
 
             $order->save();
-
             //OrderProduct
             $orderID = $order->id;
             $createTime = $order->create_time;
@@ -114,6 +114,7 @@ class Order
         if(count($this->products) > 1){
             $snap['snapName'] = $snap['snapName'].'等';
         }
+
         return $snap;
     }
 
@@ -147,10 +148,12 @@ class Order
             if(!$pStatus['hasStock']){
                 $status['pass'] = false;
             }
+
             $status['orderPrice'] += $pStatus['totalPrice'];
-            $status['totalCount'] += $pStatus['count'];
+            $status['totalCount'] += $pStatus['counts'];
             array_push($status['pStatusArray'],$pStatus);
         }
+
         return $status;
     }
 
@@ -161,10 +164,11 @@ class Order
         $pStatus = [
             'id' => null,
             'hasStock' => 'false',
-            'count' => 0,
-            'name' =>'',
+            'counts' => 0,
+            'name' => '',
+            'price' => null,
             'totalPrice' => 0,
-            'img'=>''
+            'main_img_url' => ''
         ];
 
         for($i=0; $i<count($products);$i++){
@@ -181,8 +185,9 @@ class Order
            $product = $products[$pIndex];
            $pStatus['id'] = $product['id'];
            $pStatus['name'] = $product['name'];
-           $pStatus['img'] = $product['main_img_url'];
-           $pStatus['count'] = $oCount;
+           $pStatus['main_img_url'] = $product['main_img_url'];
+           $pStatus['counts'] = $oCount;
+           $pStatus['price'] = $product['price'];
            $pStatus['totalPrice'] = $product['price']*$oCount;
            if($product['stock'] - $oCount >=0){
                $pStatus['hasStock'] = true;

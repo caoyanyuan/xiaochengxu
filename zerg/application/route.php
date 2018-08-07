@@ -38,14 +38,14 @@ Route::post('api/:version/token/verify','api/:version.Token/verify');
 
 
 //Address
-Route::post('api/:verison/address','api/:verison.Address/createOrUpdate');
-Route::get('api/:verison/address','api/:verison.Address/getAddress');
+Route::post('api/:version/address','api/:version.Address/createOrUpdate');
+Route::get('api/:version/address','api/:version.Address/getAddress');
 
 //Order
-Route::post('api/:verison/order','api/:verison.Order/placeOrder');
+Route::post('api/:version/order','api/:version.Order/placeOrder');
 Route::get('api/:version/order/by_user','api/:version.Order/getSummaryByUser');
-Route::get('api/:version/order/by_user/:id','api/:version.Order/getDetail');
+Route::get('api/:version/order/:id','api/:version.Order/getDetail');
 
-Route::post('api/:verison/pay/pre_order','api/:verison.Pay/getPreOrder');
-Route::post('api/:verison/pay/re_notify','api/:verison.Pay/receiveNotify');
+Route::post('api/:version/pay/pre_order','api/:version.Pay/getPreOrder');
+Route::post('api/:version/pay/re_notify','api/:version.Pay/receiveNotify');
 
