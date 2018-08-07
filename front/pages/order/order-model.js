@@ -66,5 +66,20 @@ export class Order extends Base{
     }; 
     this.request(params);   
   }
+
+  //获取用户订单 分页：pageIndex
+  getOrdersByUser(pageIndex,size,callback){
+    var params = {
+      url: '/order/by_user',
+      data: {
+        page: pageIndex,
+        size: size
+      },
+      sCallback: function(res){
+        callback && callback(res);
+      }
+    }
+    this.request(params);
+  }
 }
 
