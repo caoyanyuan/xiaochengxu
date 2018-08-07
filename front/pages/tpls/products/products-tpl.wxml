@@ -1,6 +1,6 @@
 <template name="products">
      <view class="products-box">
-        <block wx:for="{{products}}">
+        <block wx:for="{{products}}" wx:key="id">
             <view class="products-item" bindtap="onProductItemTap" data-id="{{item.id}}">
                 <image class="products-image" src="{{item.main_img_url}}" mode="aspectFill"></image>
                 <view class="products-item-bottom">

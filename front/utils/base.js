@@ -4,6 +4,7 @@ import {Token} from 'token.js'
 class Base{
     constructor(){
         this.baseRequestUrl = Config.baseUrl;
+        this.canPay = Config.canPay;
     }
 
     /*
